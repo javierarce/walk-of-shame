@@ -15,7 +15,7 @@ function getCurrentDate() {
 
 function addGraph(w, h) {
 
-  var margin = { top: 15, right: 5, bottom: 25, left: 40 };
+  var margin = { top: 15, right: 5, bottom: 25, left: 45 };
   var width  = w - margin.left - margin.right;
   var height = h - margin.top - margin.bottom;
 
@@ -33,7 +33,18 @@ function addGraph(w, h) {
 
     data = json.slice(0, 15);
 
+    //console.log(data)
+
+    var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S+01:00").parse;
+    var xExtent = d3.extent(data, function(d) { console.log(d.created_at); return parseDate(d.created_at); });
+    var nxExtent = [xExtent[0], xExtent[1]];
+
     var barWidth = width/data.length;
+
+    var x = d3.time.scale()
+    .domain(nxExtent)
+    .range([0, width - barWidth - 1])
+    console.log(barWidth)
 
     y.domain([0, d3.max(data, function(d) { return d.steps; } )]);
 
@@ -42,9 +53,25 @@ function addGraph(w, h) {
     .orient("left")
     .ticks(5);
 
+    var xAxis = d3.svg.axis()
+    .scale(x)
+    .ticks(d3.time.days,1)
+    .tickFormat(d3.time.format("%d/%m"))
+    .orient("bottom")
+
     chart.append("g")
     .attr("class", "y axis")
+    .attr("transform", "translate(" + -5 + ",0)")
     .call(yAxis);
+
+    chart.append("g")
+    .attr("class", "x axis")
+    .call(xAxis);
+
+    chart.selectAll(".x.axis ")  // select all the text elements for the xaxis
+    .attr("transform", function(d, i) {
+      return "translate(" + barWidth/2 + ", " + height + ")";
+    });
 
     // Draw Y-axis grid lines
     chart.selectAll("line.y")
@@ -56,13 +83,13 @@ function addGraph(w, h) {
     .attr("y1", y)
     .attr("y2", y);
 
-    var label = chart.append("text")
-    .attr("x", 0)
-    .attr("y", height)
-    .attr("dy", "1.5em")
-    .attr("font-size", ".7em")
-    .attr("font-style", "italic")
-    .text("Number of steps per day. The red bar indicates the current day.");
+    //var label = chart.append("text")
+    //.attr("x", 0)
+    //.attr("y", height)
+    //.attr("dy", "1.5em")
+    //.attr("font-size", ".7em")
+    //.attr("font-style", "italic")
+    //.text("Number of steps per day. The red bar indicates the current day.")
 
     var bar = chart.selectAll(".bar")
     .data(data.reverse())
@@ -76,7 +103,7 @@ function addGraph(w, h) {
         return "bar";
       }
     })
-    .attr("transform", function(d, i) { return "translate(" + (5 + i * barWidth) + ", 0 )"; })
+    .attr("transform", function(d, i) { return "translate(" + (i * barWidth) + ", 0 )"; })
     .attr("y", function(d){  return height; })
     .attr("height", 0)
     .attr("width", barWidth - 1);
@@ -87,10 +114,29 @@ function addGraph(w, h) {
     .delay(function(d, i) { return i*100 })
     .attr("height", function(d) { return d.steps ? height - y(d.steps) : 0; })
     .attr("y", function(d){ return d.steps ? y(d.steps) : height; });
+
+    var median = d3.median(data, function(d) { return d.steps; });
+
+    chart.append("line")
+    .attr("class", "median")
+    .attr("x1", 0)
+    .attr("y1", y(median))
+    .attr("y2", y(median))
+    .attr("x2", width)
+
+    chart.append("text")
+    .attr("class", "median-label")
+    .attr("x", width)
+    .attr("y", y(median))
+    .attr("dy", "-0.5em")
+    .style("text-anchor","end") 
+    .attr("startOffset","100%")
+    .text("Median: " + median);
+
   });
 }
 
 
 window.onload = function() {
-  addGraph(600, 300);
+  addGraph(900, 300);
 }
