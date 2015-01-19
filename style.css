@@ -1,0 +1,38 @@
+body {
+  color: #333;
+  font-size: 16px;
+  line-height: 28px;
+  text-rendering: optimizeLegibility;
+  padding: 20px;
+}
+
+.bar {
+  fill: black;
+  shape-rendering: crispEdges;
+}
+
+.bar.today {
+  fill: #E51D30;
+}
+
+.axis {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+  shape-rendering: crispEdges;
+}
+
+line.y {
+  stroke: #f1f1f1;
+  shape-rendering: crispEdges;
+}
