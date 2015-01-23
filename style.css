@@ -1,50 +1,75 @@
+@import url(http://fonts.googleapis.com/css?family=Lato:400,700);
+
 body {
-  color: #333;
-  font-size: 16px;
-  line-height: 28px;
-  text-rendering: optimizeLegibility;
   padding: 20px;
+  color: #333;
+  line-height: 28px;
+  font-size: 16px;
+  font-family: "Lato";
+  text-rendering: optimizeLegibility;
 }
 
 .bar {
   fill: black;
   shape-rendering: crispEdges;
 }
-
 .bar.today {
   fill: #666;
+}
+.bar:hover {
+  fill: #F05658;
 }
 
 .axis {
   font: 10px sans-serif;
   shape-rendering: crispEdges;
 }
-
 .axis path,
 .axis line {
   fill: none;
   stroke: #000;
   shape-rendering: crispEdges;
 }
-
-
-.median-label {
-  fill: red;
-  font-style: italic;
-  font-size: .7em;
-}
-.median {
-  stroke: red;
-  stroke-dasharray: 1,3;
+line.y {
+  stroke: #f1f1f1;
   shape-rendering: crispEdges;
 }
-
 .x.axis path {
   display: none;
   shape-rendering: crispEdges;
 }
 
-line.y {
-  stroke: #f1f1f1;
+.median-label {
+  fill: #F05658;
+  font-size: .7em;
+}
+.median {
+  stroke: #F05658;
+  stroke-dasharray: 1,3;
   shape-rendering: crispEdges;
+}
+
+.d3-tip {
+  font-size: 12px;
+  line-height: 1;
+  padding: 12px;
+  background: #333;
+  color: #fff;
+  border-radius: 3px;
+}
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: #333;
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
 }

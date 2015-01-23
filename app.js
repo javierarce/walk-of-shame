@@ -1,16 +1,20 @@
 function getCurrentDate() {
-  var today = new Date();
-  var dd = today.getDate();
-  var mm = today.getMonth()+1; //January is 0!
 
-  var yyyy = today.getFullYear();
-  if(dd<10){
-    dd='0'+dd;
-  } 
-  if(mm<10){
-    mm='0'+mm;
-  } 
-  return yyyy+'-'+mm+'-'+dd;
+  var today = new Date();
+  var dd    = today.getDate();
+  var mm    = today.getMonth() + 1; //January is 0!
+
+  var yyyy  = today.getFullYear();
+
+  if (dd < 10) {
+    dd = '0' + dd;
+  }
+
+  if (mm < 10) {
+    mm = '0' + mm;
+  }
+
+  return yyyy + '-' + mm + '-' + dd;
 }
 
 function addGraph(w, h) {
@@ -33,18 +37,15 @@ function addGraph(w, h) {
 
     data = json.slice(0, 15);
 
-    //console.log(data)
-
     var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S+01:00").parse;
-    var xExtent = d3.extent(data, function(d) { console.log(d.created_at); return parseDate(d.created_at); });
+    var xExtent   = d3.extent(data, function(d) { return parseDate(d.created_at); });
     var nxExtent = [xExtent[0], xExtent[1]];
 
     var barWidth = width/data.length;
 
     var x = d3.time.scale()
     .domain(nxExtent)
-    .range([0, width - barWidth - 1])
-    console.log(barWidth)
+    .range([0, width - barWidth - 1]);
 
     y.domain([0, d3.max(data, function(d) { return d.steps; } )]);
 
@@ -53,20 +54,29 @@ function addGraph(w, h) {
     .orient("left")
     .ticks(5);
 
-    var xAxis = d3.svg.axis()
-    .scale(x)
-    .ticks(d3.time.days,1)
-    .tickFormat(d3.time.format("%d/%m"))
-    .orient("bottom")
-
     chart.append("g")
     .attr("class", "y axis")
     .attr("transform", "translate(" + -5 + ",0)")
     .call(yAxis);
 
+    var xAxis = d3.svg.axis()
+    .scale(x)
+    .ticks(d3.time.days,1)
+    .tickFormat(d3.time.format("%d/%m"))
+    .orient("bottom");
+
     chart.append("g")
     .attr("class", "x axis")
     .call(xAxis);
+
+    var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      return d.steps + " steps";
+    });
+
+    chart.call(tip);
 
     chart.selectAll(".x.axis ")  // select all the text elements for the xaxis
     .attr("transform", function(d, i) {
@@ -82,14 +92,6 @@ function addGraph(w, h) {
     .attr("x2", width + 5)
     .attr("y1", y)
     .attr("y2", y);
-
-    //var label = chart.append("text")
-    //.attr("x", 0)
-    //.attr("y", height)
-    //.attr("dy", "1.5em")
-    //.attr("font-size", ".7em")
-    //.attr("font-style", "italic")
-    //.text("Number of steps per day. The red bar indicates the current day.")
 
     var bar = chart.selectAll(".bar")
     .data(data.reverse())
@@ -115,6 +117,10 @@ function addGraph(w, h) {
     .attr("height", function(d) { return d.steps ? height - y(d.steps) : 0; })
     .attr("y", function(d){ return d.steps ? y(d.steps) : height; });
 
+    bar
+    .on('mouseover', tip.show)
+    .on('mouseout', tip.hide);
+
     var median = d3.median(data, function(d) { return d.steps; });
 
     chart.append("line")
@@ -122,7 +128,7 @@ function addGraph(w, h) {
     .attr("x1", 0)
     .attr("y1", y(median))
     .attr("y2", y(median))
-    .attr("x2", width)
+    .attr("x2", width);
 
     chart.append("text")
     .attr("class", "median-label")
