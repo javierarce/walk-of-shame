@@ -19,9 +19,11 @@ function getCurrentDate() {
 
 function addGraph(w, h) {
 
-  var margin = { top: 15, right: 5, bottom: 25, left: 45 };
+  var margin = { top: 15, right: 5, bottom: 25, left: 50 };
   var width  = w - margin.left - margin.right;
   var height = h - margin.top - margin.bottom;
+
+  var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   var y = d3.scale.linear()
   .range([height, 0]);
@@ -37,6 +39,7 @@ function addGraph(w, h) {
 
     data = json.slice(0, 15);
 
+    var thousandsFormat = d3.format("0,000");
     var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S+01:00").parse;
     var xExtent   = d3.extent(data, function(d) { return parseDate(d.created_at); });
     var nxExtent = [xExtent[0], xExtent[1]];
@@ -73,7 +76,9 @@ function addGraph(w, h) {
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return d.steps + " steps";
+      var format = d3.time.format("%w");
+      var day = weekdays[format(new Date(d.created_at))]; 
+      return "<strong>" + day + "</strong>: " + thousandsFormat(d.steps) + " steps";
     });
 
     chart.call(tip);
@@ -137,7 +142,7 @@ function addGraph(w, h) {
     .attr("dy", "-0.5em")
     .style("text-anchor","end") 
     .attr("startOffset","100%")
-    .text("Median: " + median);
+    .text("Median: " + thousandsFormat(median) + " steps");
 
   });
 }
