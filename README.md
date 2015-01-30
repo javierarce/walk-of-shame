@@ -4,4 +4,4 @@ For the last several months I've been using a [fitbit tracker](http://www.amazon
 
 Using the [D3.js&nbsp;library](http://d3js.org), the [fitbit gem](https://github.com/whazzmaster/fitgem),&nbsp;my [tumblr-plugin-loader](https://github.com/javierarce/tumblr-plugin-loader) project plus a little sinatra application, I decided to create [a self-updating blog post](http://blog.javierarce.com/post/107336774734/15-day-walk-of-shame) that shows how good &mdash; or, at the moment of this writing, how bad&mdash; I've performed in the last 15 days.&nbsp;
 
-![15-day Walk of Shame](https://raw.githubusercontent.com/javierarce/walk-of-shame/gh-pages/sample.png "Sample")
+![15-day Walk of Shame](https://raw.githubusercontent.com/javierarce/walk-of-shame/gh-pages/sample.png "15-day Walk of Shame")
